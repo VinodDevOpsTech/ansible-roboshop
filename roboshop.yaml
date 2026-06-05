@@ -5,6 +5,8 @@
   vars:
     instances: ["mongodb", "redis", "mysql",  "rabbitmq"]
     image-id: ami-0220d79f3f480ecf5
+    domain-name: maxdevops.online
+    action: create
   tasks:
     amazon.aws.ec2_instance:
     name: "roboshop-{{ item }}"
