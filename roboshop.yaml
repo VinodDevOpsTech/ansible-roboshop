@@ -15,4 +15,4 @@
     security_groups:
     - roboshop-{{ item }}
     - roboshop-common
-    loop: {{ instances }}
+    loop: "{{ instances }}"
