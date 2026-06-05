@@ -4,14 +4,14 @@
   become: yes
   vars:
     instances: ["mongodb", "redis", "mysql",  "rabbitmq"]
-    image-id: ami-0220d79f3f480ecf5
+    image_id: ami-0220d79f3f480ecf5
     domain-name: maxdevops.online
     action: create
   tasks:
     amazon.aws.ec2_instance:
     name: "roboshop-{{ item }}"
-    instance_type: "t3-micro"
-    image_id: {{ image-id }}
+    instance_type: t3-micro
+    image_id: {{ image_id }}
     security_groups:
       roboshop-{{ item }}
       roboshop-common
