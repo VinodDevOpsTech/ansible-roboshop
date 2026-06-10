@@ -1,2 +1,11 @@
 ansible_user: ec2-user
 ansible_password: DevOps321
+MONGODB_HOST: mongodb.maxdevopstech.online
+REDIS_HOST: redis.maxdevopstech.online
+MYSQL_HOST: mysql.maxdevopstech.online
+RABBITMQ_HOST: rabbitmq.maxdevopstech.online 
+CATALOGUE_HOST: catalogue.maxdevopstech.online
+USER_HOST: user.maxdevopstech.online
+CART_HOST: cart.maxdevopstech.online
+SHIPPING_HOST: shipping.maxdevopstech.online
+PAYMENT_HOST: payment.maxdevopstech.online

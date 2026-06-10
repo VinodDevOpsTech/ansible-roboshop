@@ -1,0 +1,82 @@
+- name: configure user server
+  hosts: user
+  become: yes
+  tasks: 
+  - name: enble nodejs 20
+    command: dnf module enable nodejs:20 -y
+
+  - name: install nodejs
+    package:
+    - name: nodejs
+      state: present
+  - name: adding system user
+    user: 
+      name: roboshop
+      system: true
+      home: /app
+      shell: /sbin/nologin/
+      comment: "roboshop system user"
+
+  - name: removing directory
+    file: 
+      path: /app
+      state: absent
+
+  - name: delete user.zip
+    file: 
+      path: /tmp/user.zip
+      state: absent
+
+  - name: make directory
+    file: 
+      path: /app
+      state: directory
+
+  - name: install packages fronn link
+    get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip 
+      dest: /tmp/user.zip
+
+  - name: unzip files
+    unarchive:
+      src: /tmp/user.zip
+      dest: /app
+      remote_src: yes
+
+  - name: install depensiece
+    community.general.npm:
+      path: /app
+
+  - name: user service
+    copy:
+      src: user.service.j2
+      dest: /etc/systemd/system/user.service
+
+  - name: deamon reload
+    systemd_service: 
+      name: user
+      deamon_reload: yes
+
+  - name: start and enable user
+    service: 
+      name: user
+      state: restarted
+      enabled: yes
+
+  - name: deamon-service
+    systemd_service:
+      name: cart
+      deamon_reload: yes
+
+  - name: start and enable cart service
+    service: 
+      name: cart
+      state: restarted
+      enabled: yes
+
+              
+
+
+      
+
+      

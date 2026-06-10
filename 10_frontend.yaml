@@ -1,0 +1,54 @@
+- name: configure frontend server
+  hosts: frontend
+  become: yes
+  tasks: 
+  - name: enable nginx:1.24
+    command: dnf module enable nginx:1.24 -y
+  
+  - name: install nginx
+    package: 
+      name: nginx
+      state: present
+
+  - name: removing html directory
+    file: 
+      path: /usr/share/nginx/html/
+      state: absent
+
+  - name: delete frontend.zip
+    file:
+      path: /usr/share/nginx/html/
+      state: absent    
+
+  - name: making directory
+    file:
+      path: /usr/share/nginx/html/
+      state: directory
+
+  - name: download frontend.zip
+    get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
+      dest: /tmp/frontend.zip
+
+  - name: exctract zip
+    unarchive: 
+      src: /tmp/frontend.zip
+      dest: /usr/share/nginx/html
+      remote_src: yes
+
+  - name: remove nginx default conf
+    file:
+      path: /etc/nginx/nginx.conf
+      state: absent
+
+  - name: copy frontend config
+    template:
+      src: nginx.config.j2
+      dest: /etc/nginx/nginx.conf
+
+  - name: restart and enable frontend
+    service:
+      name: nginx
+      state: restarted
+      enabled: yes    
+              

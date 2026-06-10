@@ -1,0 +1,89 @@
+- name: configure shipping server
+  hosts: shipping
+  become: yes
+  tasks:
+  - name: install maven and mysql
+    package: 
+      name: "{{ item }}"
+      state: present
+    loop:
+    - maven
+    - mysql
+
+  - name: creating system user
+    user: 
+      name: roboshop
+      home: /app
+      system: true
+      shell: /sbin/nologin
+      comment: "roboshop system user"  
+
+  - name: deleteing /app directory
+    file: 
+      path: /app
+      state:  absent
+
+  - name: delete shipping.zip
+    file: 
+      path: /tmp/shipping.zip
+      state: absent
+
+  - name: making /app directory
+    file: 
+      path: /app
+      state: directory
+
+  - name: download shipping code
+    get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip
+      dest: /tmp/shipping.zip
+
+  - name: remote access
+    unarchive:
+      src: /tmp/shipping.zip
+      dest: /app
+      remote_src: yes
+  - name: install depensecies
+    command: mvn clean package 
+    args:
+      chdir: /app
+
+  - name: moving into shipping jar
+    command: mv target/shipping-1.0.jar shipping.jar 
+    args:
+      chdir: /app
+
+  - name: shipping service
+    copy:
+      src: shipping.service.j2
+      dest: /etc/systemd/system/shipping.service
+      
+  - name: systemd service
+    systemd_service: 
+      name: shipping
+      deamon_reload: true
+
+  - name: start and enable shipping server
+    service: 
+      name: shipping
+      state: restarted
+
+  - name: download databases
+    ansible.mysql.mysql_db:
+      state: import
+      name: all
+      login_user: root
+      login_password: RoboShop@1
+      login_host: "{{ MYSQL_HOST }}"
+      target: "{{ item }}"
+
+    loop:
+    - /app/db/schema.sql    
+    - /app/db/app-user.sql 
+    - /app/db/master-data.sql
+
+  - name: restart shpping
+    service: 
+      name: shippig
+      state: restarted
+      enabled: yes
