@@ -49,7 +49,7 @@
       path: /app
 
   - name: cart service
-    service:
+    template:
       src: cart.service.j2
       path: /etc/systemd/system/cart.service           
   - name: deamon reload
