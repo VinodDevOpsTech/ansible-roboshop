@@ -5,7 +5,7 @@
   - name: install python
     package:
       name: "{{ item }}"
-      state: presnet
+      state: present
     loop: 
     - python3
     - gcc
