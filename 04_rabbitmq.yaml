@@ -4,17 +4,17 @@
   tasks:
   - name: setting rabbitmq repo
     copy:
-      source: rabbitmq.repo
+      src: rabbitmq.repo
       dest: /etc/yum.repos.d/rabbitmq.repo
 
   - name: install rabbitmq-server
     package:
-    - name: rabbitmq-server
+      name: rabbitmq-server
       state: present
 
   - name: start and enable rabbitmq server
     service:
-    - name: rabbitmq-server
+      name: rabbitmq-server
       state: started
       enabled: yes
 
@@ -22,7 +22,7 @@
     community.rabbitmq.rabbitmq_user:
       user: roboshop
       password: roboshop123
-      permission:
+      permissions:
       - vhost: /
         configure_priv: .*
         read_priv: .*
