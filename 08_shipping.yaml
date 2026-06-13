@@ -54,14 +54,13 @@
       chdir: /app
 
   - name: shipping service
-    copy:
+    template:
       src: shipping.service.j2
       dest: /etc/systemd/system/shipping.service
       
   - name: systemd service
     systemd_service: 
-      name: shipping
-      deamon_reload: true
+      daemon_reload: true
 
   - name: start and enable shipping server
     service: 
@@ -69,7 +68,7 @@
       state: restarted
 
   - name: download databases
-    ansible.mysql.mysql_db:
+    community.mysql.mysql_db:
       state: import
       name: all
       login_user: root
@@ -84,6 +83,6 @@
 
   - name: restart shpping
     service: 
-      name: shippig
+      name: shipping
       state: restarted
       enabled: yes
