@@ -63,7 +63,7 @@
       state: restarted
       enabled: yes
 
-  - name: deamon-service
+  - name: daemon_reload
     systemd_service:
       name: cart
       daemon_reload: yes
