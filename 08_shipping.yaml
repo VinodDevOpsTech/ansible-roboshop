@@ -2,72 +2,60 @@
   hosts: shipping
   become: yes
   tasks:
-  - name: install maven and mysql
-    package: 
+  - name: install maven
+    package:
       name: "{{ item }}"
       state: present
     loop:
     - maven
     - mysql
-
-  - name: creating system user
-    user: 
+  - name: create roboshop system user
+    user:
       name: roboshop
-      home: /app
       system: true
+      home: /app
       shell: /sbin/nologin
-      comment: "roboshop system user"  
-
-  - name: deleteing /app directory
-    file: 
+      comment: "Roboshop System user"
+  - name: remove app directory
+    file:
       path: /app
-      state:  absent
-
-  - name: delete shipping.zip
-    file: 
+      state: absent
+  - name: delete shipping.zip in tmp directory
+    file:
       path: /tmp/shipping.zip
       state: absent
-
-  - name: making /app directory
-    file: 
+  - name: create app directory
+    file:
       path: /app
       state: directory
-
-  - name: download shipping code
+  - name: download shipping
     get_url:
-      url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip
+      url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
       dest: /tmp/shipping.zip
-
-  - name: remote access
+  - name: unzip shipping
     unarchive:
       src: /tmp/shipping.zip
       dest: /app
       remote_src: yes
-  - name: install depensecies
-    command: mvn clean package 
+  - name: install dependencies
+    command: mvn clean package
     args:
       chdir: /app
-
-  - name: moving into shipping jar
+  - name: move shipping jar
     command: mv target/shipping-1.0.jar shipping.jar 
     args:
       chdir: /app
-
-  - name: shipping service
+  - name: copy shipping service
     template:
       src: shipping.service.j2
       dest: /etc/systemd/system/shipping.service
-      
-  - name: systemd service
-    systemd_service: 
-      daemon_reload: true
 
-  - name: start and enable shipping server
-    service: 
-      name: shipping
-      state: restarted
+  - name: install python dependencies
+    pip:
+      name: PyMySQL
+      executable: pip3.9
 
-  - name: download databases
+  - name: load mysql data
     community.mysql.mysql_db:
       state: import
       name: all
@@ -75,14 +63,16 @@
       login_password: RoboShop@1
       login_host: "{{ MYSQL_HOST }}"
       target: "{{ item }}"
-
     loop:
-    - /app/db/schema.sql    
+    - /app/db/schema.sql
     - /app/db/app-user.sql 
     - /app/db/master-data.sql
-
-  - name: restart shpping
-    service: 
+  - name: deamon reload
+    systemd_service:
+      name: shipping
+      daemon_reload: true
+  - name: enable and start shipping
+    service:
       name: shipping
       state: restarted
       enabled: yes
