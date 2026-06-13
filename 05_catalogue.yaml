@@ -1,5 +1,6 @@
 - name: catalogue configuration
   hosts: catalogue
+  become: true
   tasks: 
   - name: enabling nodejs 20
     command: dnf module enable nodejs:20 -y
