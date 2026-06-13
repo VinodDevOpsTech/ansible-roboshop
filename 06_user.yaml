@@ -14,7 +14,7 @@
       name: roboshop
       system: true
       home: /app
-      shell: /sbin/nologin/
+      shell: /sbin/nologin
       comment: "roboshop system user"
 
   - name: removing directory
@@ -54,7 +54,6 @@
 
   - name: deamon reload
     systemd_service: 
-      name: user
       deamon_reload: yes
 
   - name: start and enable user
