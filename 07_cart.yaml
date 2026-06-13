@@ -46,7 +46,7 @@
 
   - name: installing dependicies
     community.general.npm:
-      dest: /app
+      path: /app
 
   - name: cart service
     service:
@@ -55,7 +55,7 @@
   - name: deamon reload
     systemd_service:
       name: cart
-      deamon_reload: true
+      daemon_reload: true
 
   - name: start and enable cart server
     service: 
