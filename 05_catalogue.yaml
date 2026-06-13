@@ -6,12 +6,12 @@
 
   - name: install node js
     package: 
-    - name: nodejs
+      name: nodejs
       state: present
 
   - name: create system user
     user:
-    - name: roboshop
+      name: roboshop
       system: yes
       home: /app
       shell: /sbin/nologin
