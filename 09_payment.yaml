@@ -58,7 +58,6 @@
 
   - name: systemd service
     systemd_service:
-      name: payment
       deamon_reload: true
 
   - name: start and enable payment server
