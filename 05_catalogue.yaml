@@ -31,7 +31,7 @@
   - name: making directory
     file: 
       path: /app
-      state: present
+      state: directory
 
   - name: installing catalogue file
     get_url:
