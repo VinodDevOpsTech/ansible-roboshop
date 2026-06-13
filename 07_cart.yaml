@@ -51,7 +51,7 @@
   - name: cart service
     template:
       src: cart.service.j2
-      path: /etc/systemd/system/cart.service           
+      dest: /etc/systemd/system/cart.service           
   - name: deamon reload
     systemd_service:
       name: cart
