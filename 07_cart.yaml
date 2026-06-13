@@ -7,7 +7,7 @@
 
   - name: install nodejs
     package: 
-    - name: nodejs
+      name: nodejs
       state: present
 
   - name: creating sysetem user

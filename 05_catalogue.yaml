@@ -60,7 +60,7 @@
 
   - name: install mongodb-mongosh
     package:
-    - name: mongodb-mongosh
+      name: mongodb-mongosh
       state: present
 
   - name: check catalogue schema exist ot not
